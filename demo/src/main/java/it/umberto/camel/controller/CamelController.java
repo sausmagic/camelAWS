@@ -37,16 +37,10 @@ public class CamelController {
 	
 	@RequestMapping(value = "/awsRead")
 	public void startCamelAWSRead() throws Exception {
-		Exchange e =consumerTemplate.receive("aws-sqs://{{umberto.queue.aws.name}}?accessKey={{umberto.queue.aws.accessKey}}&amp;secretKey=RAW({{umberto.queue.aws.secretKey}})&amp;amazonSQSEndpoint={{umberto.queue.aws.amazonSQSEndpoint}}&amp;concurrentConsumers=1&amp;maxMessagesPerPoll=1");
-		LOG.info("Il body presente nel messaggio del Exchange sulla rotta è: {} ",e.getMessage().getBody());		
-//		try {
-//			camelContext.addRoutes(new CamelRoutesAWS());
-//			camelContext.start();
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}finally {
-//			camelContext.stop();
-//		}
+//		Exchange e =consumerTemplate.receive("aws-sqs://{{umberto.queue.aws.name}}?accessKey={{umberto.queue.aws.accessKey}}&amp;secretKey=RAW({{umberto.queue.aws.secretKey}})&amp;amazonSQSEndpoint={{umberto.queue.aws.amazonSQSEndpoint}}&amp;concurrentConsumers=1&amp;maxMessagesPerPoll=1");
+		Exchange e =consumerTemplate.receive("aws-sqs://{{umberto.queue.aws.name}}?accessKey={{umberto.queue.aws.accessKey}}&secretKey=RAW({{umberto.queue.aws.secretKey}})&amazonSQSEndpoint={{umberto.queue.aws.amazonSQSEndpoint}}&concurrentConsumers=1&maxMessagesPerPoll=1");
+		LOG.info("Il body presente nel messaggio del Exchange sulla rotta è: {} ",e);		
+
 		
 			
 	}
