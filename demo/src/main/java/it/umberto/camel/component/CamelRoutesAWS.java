@@ -1,5 +1,10 @@
 package it.umberto.camel.component;
 
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +23,26 @@ public class CamelRoutesAWS extends RouteBuilder {
 	@Override
 	public void configure() throws Exception {
 		LOG.info("UMBERTO invocata rotta della classe: {} e coda: {}", this.getClass().getName(),codaAmazon);
-
+		
+		from("direct:testReadHeader")
+		.log("leggo dall'exchange l'header inviato dal producer")
+		.process(new Processor() {
 			
-//		from("aws-sqs://{{umberto.queue.aws.name}}?accessKey={{umberto.queue.aws.accessKey}}&amp;secretKey=RAW({{umberto.queue.aws.secretKey}})&amp;amazonSQSEndpoint={{umberto.queue.aws.amazonSQSEndpoint}}&amp;concurrentConsumers=1&amp;maxMessagesPerPoll=1");
+			@Override
+			public void process(Exchange exchange) throws Exception {
+				
+				Map<String, Object> headers = exchange.getIn().getHeaders();
+				Set<String> keys = headers.keySet(); 
+				
+				for (String header : keys) {
+					LOG.info("Header: key: {} value: {}",new Object[] {header, headers.get(header)});
+				}
+					
+				LOG.info("Il body è: {}",exchange.getIn().getBody());
+				
+			}
+		});
+
 
 	}
 }
