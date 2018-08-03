@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+
+
+
+	<jmxConfigurator />
+	<appender name="appender.console"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%X{camel.messageId}] %-5level %logger{36}
+				- %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="appender.file.SIFT.demoUmb"
+		class="ch.qos.logback.classic.sift.SiftingAppender">
+		<discriminator
+			class="ch.qos.logback.classic.sift.MDCBasedDiscriminator">
+			<key>camel.contextId</key>
+			<defaultValue>UMBERTO</defaultValue>
+		</discriminator>
+		<sift>
+			<appender name="demoCamel-${camel.contextId}"
+				class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<file>D:/IDE Sviluppo/LOG/demoCamelApp/demo-${camel.contextId}.log
+				</file>
+				<rollingPolicy
+					class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<fileNamePattern>D:/IDE
+						Sviluppo/LOG/demoCamelApp/camelDemo-${camel.contextId}.%d{yyyy-MM-dd}.log.zip
+					</fileNamePattern>
+					<maxHistory>120</maxHistory>
+				</rollingPolicy>
+				<encoder>
+					<charset>UTF-8</charset>
+					<!-- evitare M e L (almeno in prod) per non rallentare le performance -->
+					<pattern>%d{HH:mm:ss.SSS} [%X{camel.messageId} | %X{camel.routeId}]
+						%-5level %logger{35}\(%M:%L\) - %msg%n</pattern>
+				</encoder>
+			</appender>
+		</sift>
+	</appender>
+
+	<logger name="it.umberto.camel" level="TRACE" additivity="false">
+		<appender-ref ref="appender.file.SIFT.demoUmb" />
+	</logger>
+
+	<logger name="org.springframework" level="INFO" additivity="false"/>
+
+	<logger name="org.apache.camel" level="TRACE" additivity="false">
+		<appender-ref ref="appender.file.SIFT.demoUmb"></appender-ref>
+	</logger>
+	<root level="INFO">
+		<appender-ref ref="appender.file.SIFT.demoUmb" />
+	</root>
+
+</configuration>
