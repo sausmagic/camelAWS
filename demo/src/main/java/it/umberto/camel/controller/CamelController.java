@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -36,15 +37,18 @@ public class CamelController {
 	}
 	
 	@RequestMapping(value = "/awsRead")
-	public void startCamelAWSRead() {
+	@ResponseBody
+	public String startCamelAWSRead() {
 		
 		Exchange e1 =consumerTemplate.receive("aws-sqs://{{umberto.queue.aws.name}}?accessKey={{umberto.queue.aws.accessKey}}&secretKey=RAW({{umberto.queue.aws.secretKey}})&amazonSQSEndpoint={{umberto.queue.aws.amazonSQSEndpoint}}&concurrentConsumers=1&maxMessagesPerPoll=1");
+		String bodyMessage = (String)e1.getIn().getBody();
 		LOG.info("Il body presente nel messaggio del Exchange sulla rotta è: {} ",e1.getIn().getBody());
 		consumerTemplate.doneUoW(e1);
 		
 //		Exchange e =consumerTemplate.receiveNoWait("aws-sqs://{{umberto.queue.aws.name}}?accessKey={{umberto.queue.aws.accessKey}}&secretKey=RAW({{umberto.queue.aws.secretKey}})&amazonSQSEndpoint={{umberto.queue.aws.amazonSQSEndpoint}}&concurrentConsumers=1&maxMessagesPerPoll=1");
 //		LOG.info("Il body presente nel messaggio del Exchange sulla rotta è: {} ",e.getIn().getBody());		
 		
+		return "Figa hai letto "+bodyMessage+" dalla coda di Amazon SQS";
 			
 	}
 	
